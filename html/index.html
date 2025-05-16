@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Juego de Preguntas</title>
+
+<body>
+    <div class="quiz-container">
+        <h1>Juego de Preguntas</h1>
+        <div id="question" class="question"></div>
+        <div id="options" class="options"></div>
+        <div id="result"></div>
+        <button id="next-btn">Siguiente Pregunta</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "¿nombre de tu hija?",
+                options: ["Julia", "Mia", "Roma", "Maria"],
+                answer: "Maria"
+            },
+            {
+                question: "¿En qué año nacio?",
+                options: ["1998", "1999", "2000", "2005"],
+                answer: "2000"
+            },
+            {
+                question: "¿Qué color es su favorito?",
+                options: ["dorado", "verde", "lila", "azul"],
+                answer: "azul"
+            },
+            {
+                question: "¿Qué comida es su favorito?",
+                options: ["tallarin", "lazaña", "pizza", "asado"],
+                answer: "tallarin"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const resultElement = document.getElementById("result");
+        const nextButton = document.getElementById("next-btn");
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            optionsElement.innerHTML = "";
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.classList.add("option");
+                button.addEventListener("click", () => selectOption(option));
+                optionsElement.appendChild(button);
+            });
+            resultElement.textContent = "";
+            nextButton.style.display = "none";
+        }
+
+        function selectOption(selectedOption) {
+            const currentQuestion = questions[currentQuestionIndex];
+            if (selectedOption === currentQuestion.answer) {
+                score++;
+                resultElement.textContent = "¡Correcto!";
+                resultElement.style.color = "green";
+            } else {
+                resultElement.textContent = `Incorrecto. La respuesta correcta es: ${currentQuestion.answer}`;
+                resultElement.style.color = "red";
+            }
+            document.querySelectorAll(".option").forEach(button => {
+                button.disabled = true;
+            });
+            nextButton.style.display = "block";
+        }
+
+        function showFinalScore() {
+            questionElement.textContent = "¡Juego Terminado!";
+            optionsElement.innerHTML = "";
+            resultElement.textContent = `Tu puntuación: ${score} de ${questions.length}`;
+            nextButton.style.display = "none";
+        }
+
+        nextButton.addEventListener("click", () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        });
+
+        // Cargar la primera pregunta al iniciar
+        loadQuestion();
+    </script>
+</body>
+</html>
